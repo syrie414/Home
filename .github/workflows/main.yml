@@ -19,13 +19,17 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
 
-      - name: Add EternityROM-15 submodule
+      - name: Recreate submodule tracking fifteen
         run: |
+          git submodule deinit -f EternityROM-15 || true
+          git rm -f EternityROM-15 || true
+          rm -rf .git/modules/EternityROM-15 || true
+
           git submodule add -b fifteen https://github.com/syrie414/EternityROM-15.git EternityROM-15
           git submodule update --init --remote
 
       - name: Commit and push
         run: |
           git add .gitmodules EternityROM-15
-          git commit -m "Add EternityROM-15 submodule tracking fifteen branch"
+          git commit -m "Add EternityROM-15 submodule tracking fifteen branch" || echo "No changes"
           git push https://x-access-token:${{ secrets.LINKIT }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
