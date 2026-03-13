@@ -1,33 +1,19 @@
-name: Add EternityROM Submodule
+name: Trigger Eternity Build
 
 on:
   workflow_dispatch:
 
 jobs:
-  add-submodule:
+  trigger:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.LINKIT }}
-
-      - name: Configure git
+      - name: Trigger build.yml in EternityROM-15
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-
-      - name: Add EternityROM-15 submodule
-        run: |
-          git submodule add https://github.com/syrie414/EternityROM-15.git EternityROM-15
-          cd EternityROM-15
-          git checkout bc4f72a0d578c7c0db9934afc1b06e3204e8cbca
-          cd ..
-
-      - name: Commit and push
-        run: |
-          git add .gitmodules EternityROM-15
-          git commit -m "Add EternityROM-15 as submodule (bc4f72a)"
-          git push https://x-access-token:${{ secrets.LINKIT }}@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
+          curl -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.LINKIT }}" \
+          https://api.github.com/repos/syrie414/EternityROM-15/actions/workflows/build.yml/dispatches \
+          -d '{
+            "ref": "fifteen"
+          }'
