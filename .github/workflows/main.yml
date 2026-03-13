@@ -1,1 +1,27 @@
-hereo
+name: Add EternityROM-15 Submodule
+
+on: workflow_dispatch:
+
+jobs: add_submodule: runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout main repo
+    uses: actions/checkout@v5
+    with:
+      fetch-depth: 0
+
+  - name: Configure git
+    run: |
+      git config user.name "github-actions"
+      git config user.email "actions@github.com"
+
+  - name: Add EternityROM-15 as submodule
+    run: |
+      git submodule add https://github.com/syrie414/EternityROM-15.git path/to/EternityROM-15
+      git submodule update --init --recursive
+
+  - name: Commit .gitmodules and submodule
+    run: |
+      git add .gitmodules path/to/EternityROM-15
+      git commit -m "Add EternityROM-15 as submodule"
+      git push
