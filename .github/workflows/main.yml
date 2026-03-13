@@ -1,27 +1,33 @@
-name: Add EternityROM-15 Submodule
+name: Add EternityROM Submodule
 
-on: workflow_dispatch:
+on:
+  workflow_dispatch:
 
-jobs: add_submodule: runs-on: ubuntu-latest
+jobs:
+  add-submodule:
+    runs-on: ubuntu-latest
 
-steps:
-  - name: Checkout main repo
-    uses: actions/checkout@v5
-    with:
-      fetch-depth: 0
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-  - name: Configure git
-    run: |
-      git config user.name "github-actions"
-      git config user.email "actions@github.com"
+      - name: Configure git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
 
-  - name: Add EternityROM-15 as submodule
-    run: |
-      git submodule add https://github.com/syrie414/EternityROM-15.git path/to/EternityROM-15
-      git submodule update --init --recursive
+      - name: Add submodule
+        run: |
+          git submodule add https://github.com/syrie414/EternityROM-15.git EternityROM-15
+          cd EternityROM-15
+          git checkout bc4f72a0d578c7c0db9934afc1b06e3204e8cbca
+          cd ..
 
-  - name: Commit .gitmodules and submodule
-    run: |
-      git add .gitmodules path/to/EternityROM-15
-      git commit -m "Add EternityROM-15 as submodule"
-      git push
+      - name: Commit submodule
+        run: |
+          git add .gitmodules EternityROM-15
+          git commit -m "Add EternityROM-15 as submodule (bc4f72a)"
+          git push
